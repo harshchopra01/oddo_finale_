@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - GearGuard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .table {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.01);
+        }
+        .badge {
+            font-size: 0.75em;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/dashboard">
+                <i class="bi bi-gear-fill me-2"></i>GearGuard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard"><i class="bi bi-house-door me-1"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/equipment"><i class="bi bi-tools me-1"></i>Equipment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/maintenance"><i class="bi bi-wrench me-1"></i>Maintenance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/thresholds"><i class="bi bi-graph-up me-1"></i>Thresholds</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/reports"><i class="bi bi-graph-up me-1"></i>Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 pt-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2 class="mb-0"><i class="bi bi-graph-up me-2"></i>Maintenance Reports & Analytics</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="metric-card">
+                    <div class="metric-value">{{equipment_count}}</div>
+                    <div class="metric-label">Total Equipment</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="metric-card">
+                    <div class="metric-value">{{active_equipment}}</div>
+                    <div class="metric-label">Active Equipment</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="metric-card">
+                    <div class="metric-value">{{completed_count}}</div>
+                    <div class="metric-label">Completed Tasks</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="metric-card">
+                    <div class="metric-value">₹{{total_cost|round(2)}}</div>
+                    <div class="metric-label">Total Maintenance Cost</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3"><i class="bi bi-download me-2"></i>Export Reports</h5>
+                        
+                        <!-- Filter Form -->
+                        <form method="GET" class="row g-3 mb-3" id="filterForm">
+                            <div class="col-md-3">
+                                <select name="equipment_id" class="form-select">
+                                    <option value="">All Equipment</option>
+                                    {% for log in logs %}
+                                        {% set equipment = none %}
+                                        {% for asset in assets %}
+                                            {% if asset.id == log.equipment_id %}
+                                                {% set equipment = asset %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if equipment %}
+                                            <option value="{{ equipment.id }}" {{ 'selected' if request.args.get('equipment_id') == equipment.id|string else '' }}>{{ equipment.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="date" name="start_date" class="form-control" value="{{ request.args.get('start_date', '') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="date" name="end_date" class="form-control" value="{{ request.args.get('end_date', '') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="technician" class="form-control" placeholder="Technician name" value="{{ request.args.get('technician', '') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <select name="type" class="form-select">
+                                    <option value="">All Types</option>
+                                    <option value="Preventive" {{ 'selected' if request.args.get('type') == 'Preventive' else '' }}>Preventive</option>
+                                    <option value="Corrective" {{ 'selected' if request.args.get('type') == 'Corrective' else '' }}>Corrective</option>
+                                    <option value="Emergency" {{ 'selected' if request.args.get('type') == 'Emergency' else '' }}>Emergency</option>
+                                </select>
+                            </div>
+                        </form>
+                        <form method="GET" class="row g-3 mb-3">
+                            <div class="col-md-2">
+                                <select name="priority" class="form-select">
+                                    <option value="">All Priorities</option>
+                                    <option value="Low" {{ 'selected' if request.args.get('priority') == 'Low' else '' }}>Low</option>
+                                    <option value="Medium" {{ 'selected' if request.args.get('priority') == 'Medium' else '' }}>Medium</option>
+                                    <option value="High" {{ 'selected' if request.args.get('priority') == 'High' else '' }}>High</option>
+                                    <option value="Critical" {{ 'selected' if request.args.get('priority') == 'Critical' else '' }}>Critical</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="status" class="form-select">
+                                    <option value="">All Status</option>
+                                    <option value="Pending" {{ 'selected' if request.args.get('status') == 'Pending' else '' }}>Pending</option>
+                                    <option value="In Progress" {{ 'selected' if request.args.get('status') == 'In Progress' else '' }}>In Progress</option>
+                                    <option value="Completed" {{ 'selected' if request.args.get('status') == 'Completed' else '' }}>Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="hidden" name="equipment_id" value="{{ request.args.get('equipment_id', '') }}">
+                                <input type="hidden" name="start_date" value="{{ request.args.get('start_date', '') }}">
+                                <input type="hidden" name="end_date" value="{{ request.args.get('end_date', '') }}">
+                                <input type="hidden" name="technician" value="{{ request.args.get('technician', '') }}">
+                                <input type="hidden" name="type" value="{{ request.args.get('type', '') }}">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="bi bi-funnel me-1"></i>Apply Filters
+                                </button>
+                                <a href="/reports" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Clear All Filters
+                                </a>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center">
+                            <a href="/reports/export/pdf?{{ request.query_string.decode() }}" class="btn btn-primary me-3" target="_blank">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>Export to PDF
+                            </a>
+                            <a href="/reports/export/excel?{{ request.query_string.decode() }}" class="btn btn-success" target="_blank">
+                                <i class="bi bi-file-earmark-excel me-1"></i>Export to Excel
+                            </a>
+                            <button type="button" class="btn btn-secondary ms-3" onclick="clearFilters()">
+                                <i class="bi bi-x-circle me-1"></i>Clear Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Alerts -->
+        {% if alerts %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>Active Alerts</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for alert in alerts %}
+                            <div class="col-md-6 mb-3">
+                                <div class="alert alert-{{ 'danger' if alert.severity == 'High' else 'warning' if alert.severity == 'Medium' else 'info' }} d-flex align-items-center">
+                                    <i class="bi bi-exclamation-triangle-fill me-3"></i>
+                                    <div>
+                                        <h6 class="alert-heading mb-1">{{alert.title}}</h6>
+                                        <p class="mb-1">{{alert.message}}</p>
+                                        <small class="text-muted">
+                                            Equipment: {{alert.equipment.name}} •
+                                            Severity: {{alert.severity}}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Maintenance Logs Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="bi bi-table me-2"></i>Detailed Maintenance Logs</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th><i class="bi bi-hash me-1"></i>ID</th>
+                                        <th><i class="bi bi-tools me-1"></i>Equipment</th>
+                                        <th><i class="bi bi-exclamation-triangle me-1"></i>Issue</th>
+                                        <th><i class="bi bi-gear me-1"></i>Type</th>
+                                        <th><i class="bi bi-flag me-1"></i>Priority</th>
+                                        <th><i class="bi bi-play-circle me-1"></i>Status</th>
+                                        <th><i class="bi bi-cash me-1"></i>Cost</th>
+                                        <th><i class="bi bi-calendar-date me-1"></i>Date</th>
+                                        <th><i class="bi bi-person me-1"></i>Technician</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for l in logs %}
+                                    <tr>
+                                        <td><span class="badge bg-secondary">{{l.id}}</span></td>
+                                        <td>
+                                            <strong>{{l.asset.name}}</strong>
+                                            <br>
+                                            <small class="text-muted">{{l.asset.category}}</small>
+                                        </td>
+                                        <td>{{l.issue}}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'info' if l.type == 'Preventive' else 'warning' if l.type == 'Corrective' else 'danger' }}">
+                                                {{l.type}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if l.priority == 'Low' else 'warning' if l.priority == 'Medium' else 'danger' if l.priority == 'High' else 'dark' }}">
+                                                {{l.priority}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ 'secondary' if l.status == 'Pending' else 'primary' if l.status == 'In Progress' else 'success' }}">
+                                                {{l.status}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success">₹{{l.cost or 0}}</strong>
+                                        </td>
+                                        <td>{{ l.formatted_date or 'N/A' }}</td>
+                                        <td>{{l.technician or 'N/A'}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if not logs %}
+                            <div class="text-center text-muted py-5">
+                                <i class="bi bi-graph-up display-4"></i>
+                                <p class="mt-2">No maintenance data available for reports</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-submit form when filters change
+        document.querySelectorAll('#filterForm select, #filterForm input').forEach(element => {
+            element.addEventListener('change', function() {
+                document.getElementById('filterForm').submit();
+            });
+        });
+
+        function clearFilters() {
+            // Clear all form inputs
+            document.querySelectorAll('#filterForm select, #filterForm input').forEach(element => {
+                if (element.type === 'date') {
+                    element.value = '';
+                } else {
+                    element.selectedIndex = 0;
+                }
+            });
+            // Submit the form to reload without filters
+            document.getElementById('filterForm').submit();
+        }
+    </script>
+</body>
+</html>

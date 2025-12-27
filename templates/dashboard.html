@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GearGuard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+            text-align: center;
+        }
+        .display-4 {
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .list-group-item {
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            background: rgba(255,255,255,0.8);
+        }
+        .alert-custom {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/dashboard">
+                <i class="bi bi-gear-fill me-2"></i>GearGuard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/equipment"><i class="bi bi-tools me-1"></i>Equipment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/maintenance"><i class="bi bi-wrench me-1"></i>Maintenance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/thresholds"><i class="bi bi-graph-up me-1"></i>Thresholds</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reports"><i class="bi bi-graph-up me-1"></i>Reports</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-white text-center mb-4">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard Overview
+                </h1>
+            </div>
+        </div>
+
+        <!-- Quick Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="GET" action="/dashboard" class="row g-3">
+                            <div class="col-md-3">
+                                <select name="status" class="form-select">
+                                    <option value="">All Equipment Status</option>
+                                    <option value="Active" {{ 'selected' if request.args.get('status') == 'Active' else '' }}>Active</option>
+                                    <option value="Inactive" {{ 'selected' if request.args.get('status') == 'Inactive' else '' }}>Inactive</option>
+                                    <option value="Under Maintenance" {{ 'selected' if request.args.get('status') == 'Under Maintenance' else '' }}>Under Maintenance</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="priority" class="form-select">
+                                    <option value="">All Priorities</option>
+                                    <option value="Low" {{ 'selected' if request.args.get('priority') == 'Low' else '' }}>Low</option>
+                                    <option value="Medium" {{ 'selected' if request.args.get('priority') == 'Medium' else '' }}>Medium</option>
+                                    <option value="High" {{ 'selected' if request.args.get('priority') == 'High' else '' }}>High</option>
+                                    <option value="Critical" {{ 'selected' if request.args.get('priority') == 'Critical' else '' }}>Critical</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="severity" class="form-select">
+                                    <option value="">All Alert Severities</option>
+                                    <option value="Low" {{ 'selected' if request.args.get('severity') == 'Low' else '' }}>Low</option>
+                                    <option value="Medium" {{ 'selected' if request.args.get('severity') == 'Medium' else '' }}>Medium</option>
+                                    <option value="High" {{ 'selected' if request.args.get('severity') == 'High' else '' }}>High</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-custom me-2">
+                                    <i class="bi bi-funnel me-1"></i>Apply Filters
+                                </button>
+                                <a href="/dashboard" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Clear
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-tools fs-1 text-primary mb-2"></i>
+                        <h5 class="card-title">Total Equipment</h5>
+                        <p class="card-text display-4">{{total_eq}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-clock-history fs-1 text-warning mb-2"></i>
+                        <h5 class="card-title">Pending Tasks</h5>
+                        <p class="card-text display-4">{{pending}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-check-circle-fill fs-1 text-success mb-2"></i>
+                        <h5 class="card-title">Completed</h5>
+                        <p class="card-text display-4">{{completed}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-exclamation-triangle-fill fs-1 text-danger mb-2"></i>
+                        <h5 class="card-title">Critical Alerts</h5>
+                        <p class="card-text display-4">{{critical}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bell-fill fs-1 text-info mb-2"></i>
+                        <h5 class="card-title">Active Alerts</h5>
+                        <p class="card-text display-4">{{alerts|length}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-activity me-2"></i>Recent Activity
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for r in recent %}
+                                <li class="list-group-item">
+                                    <i class="bi bi-calendar-event me-2 text-primary"></i>
+                                    {{r.date}} — {{r.issue}} <span class="badge bg-{{ 'warning' if r.priority == 'High' else 'secondary' }}">{{r.priority}}</span>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">
+                                    <i class="bi bi-info-circle me-2 text-muted"></i>No recent activity
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-bell me-2"></i>Alerts & Reminders
+                    </div>
+                    <div class="card-body">
+                        {% if alerts %}
+                            <div class="alert alert-custom mb-3">
+                                <i class="bi bi-exclamation-circle me-2"></i>You have {{alerts|length}} active alert(s)
+                            </div>
+                        {% endif %}
+                        <ul class="list-group list-group-flush">
+                            {% for a in alerts %}
+                                <li class="list-group-item">
+                                    <i class="bi bi-{{ 'exclamation-triangle' if a.type == 'critical' else 'bell' }} me-2 text-{{ 'danger' if a.type == 'critical' else 'warning' }}"></i>
+                                    {{a.message}}
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle me-2 text-success"></i>No active alerts
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="mt-3">
+                            <a href="/maintenance" class="btn btn-custom btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>View All Maintenance
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
