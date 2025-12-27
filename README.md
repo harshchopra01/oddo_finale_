@@ -1,2 +1,1 @@
-# oddo_finale_
-just look at you
+will be upadated soon fully
