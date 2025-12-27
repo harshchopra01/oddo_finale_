@@ -1,1 +1,1 @@
-will be upadated soon fully
+will be updated soon fully
